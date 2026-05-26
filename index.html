@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anubhav Coaching Institute</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e293b;
+            --accent-color: #2563eb;
+            --success-color: #16a34a;
+            --danger-color: #dc2626;
+            --warning-color: #d97706;
+            --light-bg: #f8fafc;
+            --dark-text: #0f172a;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e293b, #2563eb);
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            margin-bottom: 24px;
+            color: var(--primary-color);
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Main Dashboard Layout */
+        .dashboard {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            background-color: #0f172a;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #334155;
+            position: relative;
+        }
+
+        .sidebar-close-btn {
+            display: none;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .sidebar-menu li.menu-item {
+            padding: 14px 24px;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            transition: 0.2s;
+            font-size: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-menu li.menu-item:hover, .sidebar-menu li.menu-item.active {
+            background-color: #334155;
+            border-left-color: var(--accent-color);
+        }
+
+        .sidebar-menu li.menu-item label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu li input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #475569;
+            background-color: #1e293b;
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mobile-toggle-btn {
+            display: none;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .date-badge {
+            background-color: #f1f5f9;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .content-body {
+            padding: 30px;
+            flex-grow: 1;
+        }
+
+        .page-section {
+            display: none;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .page-section h3 {
+            color: var(--primary-color);
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* Batch Buttons Grid */
+        .batch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .batch-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 24px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+        }
+
+        .batch-btn:hover {
+            transform: translateY(-2px);
+            background-color: #1d4ed8;
+            box-shadow: 0 6px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Tables */
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .attendance-table th, .attendance-table td {
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            text-align: left;
+        }
+
+        .attendance-table th {
+            background-color: #f8fafc;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .radio-group label {
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .radio-group input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-color);
+        }
+
+        .reason-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .submit-container {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        /* Controls & Form Inputs */
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        /* Filter Section */
+        .filter-panel {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-item label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .export-btns {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .btn-success { background-color: var(--success-color); }
+        .btn-success:hover { background-color: #15803d; }
+        .btn-danger { background-color: var(--danger-color); }
+        .btn-danger:hover { background-color: #b91c1c; }
+        .btn-secondary { background-color: #64748b; color: white; }
+        .btn-secondary:hover { background-color: #475569; }
+
+        .holiday-list {
+            margin-top: 20px;
+            list-style: none;
+        }
+        .holiday-item {
+            background: #f8fafc;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .holiday-info h4 {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        .holiday-info p {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+
+        /* Fee Management Inner Layout */
+        .fee-flex {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .fee-box {
+            flex: 1;
+            min-width: 300px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            display: none;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard { flex-direction: column; height: 100vh; overflow: hidden; position: relative; }
+            .sidebar { 
+                position: fixed; 
+                top: 0; 
+                left: 0; 
+                height: 100%; 
+                width: 280px; 
+                z-index: 999; 
+                transform: translateX(-100%);
+                box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+            }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; }
+            .sidebar-close-btn { display: block; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+            .sidebar-menu { display: flex; flex-direction: column; padding: 10px 0; }
+            .sidebar-menu li.menu-item { flex: none; padding: 14px 24px; text-align: left; border-left: 4px solid transparent; }
+            .sidebar-menu li.menu-item:hover, .sidebar-menu li.menu-item.active { border-left-color: var(--accent-color); }
+            .main-content { flex-grow: 1; height: 100%; overflow-y: auto; }
+            header { flex-direction: row; justify-content: space-between; gap: 10px; padding: 15px 20px; }
+            header h1 { font-size: 18px; text-align: left; }
+            .mobile-toggle-btn { display: block; }
+            .mobile-overlay.show { display: block; }
+            .date-badge { font-size: 12px; padding: 6px 12px; }
+            .content-body { padding: 15px; }
+            .page-section { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mobileOverlay" class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+
+    <div id="login-page" class="login-container">
+        <div class="login-card">
+            <h2>Anubhav Coaching Institute</h2>
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter Username">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter Password">
+            </div>
+            <button class="btn" onclick="handleLogin()">Login</button>
+        </div>
+    </div>
+
+    <div id="dashboard-page" class="dashboard" style="display: none;">
+        <div id="appSidebar" class="sidebar">
+            <div class="sidebar-header">
+                <span>Menu Panel</span>
+                <button class="sidebar-close-btn" onclick="toggleMobileMenu()">×</button>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item active" onclick="switchPage('home')">Home</li>
+                <li class="menu-item" onclick="switchPage('add-student')">Add Student</li>
+                <li class="menu-item" onclick="switchPage('delete-student')">Delete Student</li>
+                <li class="menu-item" onclick="switchPage('student-list')">Student List</li>
+                <li class="menu-item" onclick="switchPage('create-batch')">Create New Batch</li>
+                <li class="menu-item" onclick="switchPage('delete-batch')">Delete Batch</li>
+                <li class="menu-item" onclick="switchPage('all-batch')">All Batch</li>
+                <li class="menu-item" onclick="switchPage('attendance-data')">Attendance Data</li>
+                <li class="menu-item" onclick="switchPage('fees-management')">Fees Management</li>
+                <li class="menu-item" onclick="switchPage('holidays')">Manage Holidays</li>
+                <li class="menu-item">
+                    <label>Go To Date</label>
+                    <input type="date" id="goto-date-picker" onchange="loadAttendanceByDate(this.value)">
+                </li>
+                <li class="menu-item btn-danger" onclick="handleLogout()" style="margin-top: auto; text-align: center; font-weight: bold;">Logout</li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <header>
+                <button class="mobile-toggle-btn" onclick="toggleMobileMenu()">☰ Menu</button>
+                <h1>ANUBHAV COACHING INSTITUTE</h1>
+                <div class="date-badge">Working Date: <span id="current-date-display"></span></div>
+            </header>
+
+            <div class="content-body">
+                
+                <div id="page-home" class="page-section active">
+                    <h3>Select a Batch to Take Attendance</h3>
+                    <div id="batch-buttons-container" class="batch-grid"></div>
+                </div>
+
+                <div id="page-mark-attendance" class="page-section">
+                    <h3 id="attendance-batch-title">Batch Attendance</h3>
+                    <table class="attendance-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">Roll No</th>
+                                <th style="width: 40%;">Student Name</th>
+                                <th style="width: 25%;">Status</th>
+                                <th style="width: 25%;">Reason (If Leave)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-students-body"></tbody>
+                    </table>
+                    <div class="submit-container">
+                        <button class="btn btn-success" style="width: auto; padding: 12px 35px;" onclick="submitAttendance()">Submit Attendance</button>
+                    </div>
+                </div>
+
+                <div id="page-add-student" class="page-section">
+                    <h3>Add New Student</h3>
+                    <div class="form-group">
+                        <label>Student Name</label>
+                        <input type="text" id="new-student-name" class="form-control" placeholder="Enter Full Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Select Batch Allocation</label>
+                        <select id="new-student-batch" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Monthly Fees</label>
+                        <input type="number" id="new-student-fees" class="form-control" placeholder="e.g. 1500" value="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>Joining Date</label>
+                        <input type="date" id="new-student-joining" class="form-control">
+                    </div>
+                    <button class="btn" onclick="addStudent()">Add Student</button>
+                </div>
+
+                <div id="page-delete-student" class="page-section">
+                    <h3>Delete Student</h3>
+                    <div class="form-group">
+                        <label>Select Batch</label>
+                        <select id="delete-student-batch" class="form-control" onchange="populateDeleteStudentDropdown(this.value)"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Select Student to Remove</label>
+                        <select id="delete-student-list" class="form-control"></select>
+                    </div>
+                    <button class="btn btn-danger" onclick="deleteStudent()">Delete Student</button>
+                </div>
+
+                <div id="page-student-list" class="page-section">
+                    <h3>All Registered Students List</h3>
+                    <table class="attendance-table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Student Name</th>
+                                <th>Allocated Batch</th>
+                                <th>Joining Date</th>
+                                <th>Monthly Fee</th>
+                            </tr>
+                        </thead>
+                        <tbody id="all-students-list-body"></tbody>
+                    </table>
+                </div>
+
+                <div id="page-create-batch" class="page-section">
+                    <h3>Create New Batch</h3>
+                    <div class="form-group">
+                        <label>Batch Name / Identifier</label>
+                        <input type="text" id="new-batch-name" class="form-control" placeholder="e.g., Batch 03, Class 12th Maths">
+                    </div>
+                    <button class="btn" onclick="createNewBatch()">Create Batch</button>
+                </div>
+
+                <div id="page-delete-batch" class="page-section">
+                    <h3>Delete Batch</h3>
+                    <p style="color: var(--danger-color); margin-bottom: 15px; font-size: 14px; font-weight: 600;">Warning: Deleting a batch will remove all students allocated inside that batch!</p>
+                    <div class="form-group">
+                        <label>Select Batch to Delete</label>
+                        <select id="remove-batch-dropdown" class="form-control"></select>
+                    </div>
+                    <button class="btn btn-danger" onclick="deleteBatch()">Delete Batch</button>
+                </div>
+
+                <div id="page-all-batch" class="page-section">
+                    <h3>All Active Batches</h3>
+                    <table class="attendance-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">S.No</th>
+                                <th style="width: 80%;">Batch Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="all-batches-table-body"></tbody>
+                    </table>
+                </div>
+
+                <div id="page-attendance-data" class="page-section">
+                    <h3>Saved Attendance Logs & Reports</h3>
+                    
+                    <div class="filter-panel">
+                        <div class="filter-row">
+                            <div class="filter-item">
+                                <label>Select Target Batch</label>
+                                <select id="log-filter-batch" class="form-control" style="margin-bottom:0;"></select>
+                            </div>
+                            <div class="filter-item">
+                                <label>Start Date</label>
+                                <input type="date" id="log-start-date" class="form-control" style="margin-bottom:0;">
+                            </div>
+                            <div class="filter-item">
+                                <label>End Date</label>
+                                <input type="date" id="log-end-date" class="form-control" style="margin-bottom:0;">
+                            </div>
+                        </div>
+                        <div class="export-btns">
+                            <button class="btn" onclick="viewFilteredLogs()">Search Records</button>
+                            <button class="btn btn-success" onclick="exportDataRangeExcel()">Export Date Range to CSV</button>
+                            <button class="btn btn-secondary" onclick="exportDataRangePDF()">Export to PDF</button>
+                        </div>
+                    </div>
+
+                    <div id="attendance-log-container"></div>
+                </div>
+
+                <div id="page-fees-management" class="page-section">
+                    <h3>Fees Management Dashboard</h3>
+                    
+                    <div class="filter-panel">
+                        <div class="filter-row">
+                            <div class="filter-item">
+                                <label>Select Batch to View Fees</label>
+                                <select id="fee-filter-batch" class="form-control" style="margin-bottom:0;" onchange="renderFeesTable(this.value)"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fee-flex">
+                        <div class="fee-box" style="flex: 2;">
+                            <h4>Student Fees Statement Ledger</h4>
+                            <table class="attendance-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Joining Date</th>
+                                        <th>Total Paid</th>
+                                        <th>Remaining Due / Advance</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fee-ledger-body"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="fee-box">
+                            <h4>Submit Student Fee Payment</h4>
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label>Select Student</label>
+                                <select id="fee-submit-student" class="form-control"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Amount Paid (Rs.)</label>
+                                <input type="number" id="fee-amount-paid" class="form-control" placeholder="Enter amount">
+                            </div>
+                            <div class="form-group">
+                                <label>Payment Date</label>
+                                <input type="date" id="fee-payment-date" class="form-control">
+                            </div>
+                            <button class="btn btn-success" onclick="submitStudentFee()">Submit Payment</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page-holidays" class="page-section">
+                    <h3>Manage Holidays / Institute Closures</h3>
+                    <div class="filter-panel">
+                        <div class="filter-row">
+                            <div class="filter-item">
+                                <label>Holiday Date</label>
+                                <input type="date" id="holiday-date" class="form-control" style="margin-bottom:0;">
+                            </div>
+                            <div class="filter-item">
+                                <label>Holiday Reason / Description</label>
+                                <input type="text" id="holiday-reason" class="form-control" placeholder="e.g., Diwali Festival, Sunday Closure" style="margin-bottom:0;">
+                            </div>
+                        </div>
+                        <button class="btn btn-success" style="margin-top:15px; width:auto; padding: 10px 25px;" onclick="addHoliday()">Save Holiday</button>
+                    </div>
+
+                    <h4>Saved Institute Holidays</h4>
+                    <ul id="saved-holidays-list" class="holiday-list"></ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBRswW5iRxDHre31dR3cQhdPuDPXWTHTMk",
+            authDomain: "anubhav-coaching-institute.firebaseapp.com",
+            databaseURL: "https://anubhav-coaching-institute-default-rtdb.firebaseio.com",
+            projectId: "anubhav-coaching-institute",
+            storageBucket: "anubhav-coaching-institute.firebasestorage.app",
+            messagingSenderId: "707283254376",
+            appId: "1:707283254376:web:91ce3a0f74673d2f94cfdd"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Firestore Document Reference
+        const docRef = doc(db, "coachingSystem", "masterData");
+
+        // Global Memory Variable
+        window.appData = {
+            batches: [],
+            students: [],
+            attendanceLogs: {}, 
+            holidays: {} 
+        };
+
+        // Cloud se Data Syncing (Real-Time listener)
+        onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+                window.appData = docSnap.data();
+                if (!window.appData.batches) window.appData.batches = [];
+                if (!window.appData.students) window.appData.students = [];
+                if (!window.appData.attendanceLogs) window.appData.attendanceLogs = {};
+                if (!window.appData.holidays) window.appData.holidays = {};
+            } else {
+                // Default structure if Cloud is completely empty
+                window.appData = { batches: ["Batch 01", "Batch 02"], students: [], attendanceLogs: {}, holidays: {} };
+                persistStorage();
+            }
+            refreshActiveView();
+        });
+
+        // Data Save/Update Function
+        async function persistStorage() {
+            try {
+                await setDoc(docRef, window.appData);
+            } catch (error) {
+                console.error("Firebase Sync Error: ", error);
+            }
+        }
+        window.persistStorage = persistStorage;
+    </script>
+
+    <script>
+        // Global Date States
+        let today = new Date().toISOString().split('T')[0];
+        document.getElementById('current-date-display').innerText = today;
+        document.getElementById('goto-date-picker').value = today;
+        document.getElementById('log-start-date').value = today.substring(0, 8) + "01"; 
+        document.getElementById('log-end-date').value = today;
+        document.getElementById('new-student-joining').value = today;
+        document.getElementById('fee-payment-date').value = today;
+        let selectedAttendanceBatch = "";
+        let activePageContext = "home";
+
+        function handleLogin() {
+            const userRef = document.getElementById('username').value.trim();
+            const passRef = document.getElementById('password').value.trim();
+
+            if(userRef === "anubhav" && passRef === "2005") {
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('dashboard-page').style.display = 'flex';
+                refreshActiveView();
+                alert("Login successful! Welcome to Anubhav Coaching Institute Dashboard.");
+            } else {
+                alert("Error: Invalid username or password entry. Please try again.");
+            }
+        }
+
+        function handleLogout() {
+            document.getElementById('username').value = "";
+            document.getElementById('password').value = "";
+            document.getElementById('dashboard-page').style.display = 'none';
+            document.getElementById('login-page').style.display = 'flex';
+            document.getElementById('appSidebar').classList.remove('open');
+            document.getElementById('mobileOverlay').classList.remove('show');
+            alert("You have been logged out successfully.");
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('appSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
+
+        function switchPage(pageId) {
+            activePageContext = pageId;
+            document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.sidebar-menu li.menu-item').forEach(item => item.classList.remove('active'));
+            
+            const elementTarget = document.getElementById(`page-${pageId}`);
+            if(elementTarget) elementTarget.classList.add('active');
+            
+            const menuItems = document.querySelectorAll('.sidebar-menu li.menu-item');
+            menuItems.forEach(item => {
+                if(item.getAttribute('onclick') && item.getAttribute('onclick').includes(`'${pageId}'`)) {
+                    item.classList.add('active');
+                }
+            });
+
+            if (window.innerWidth <= 992) {
+                document.getElementById('appSidebar').classList.remove('open');
+                document.getElementById('mobileOverlay').classList.remove('show');
+            }
+
+            refreshActiveView();
+        }
+
+        function refreshActiveView() {
+            if(activePageContext === 'home') initializeDashboardViews();
+            if(['add-student', 'delete-student', 'delete-batch', 'attendance-data', 'fees-management'].includes(activePageContext)) populateStructuralDropdowns();
+            if(activePageContext === 'student-list') renderStudentDataMasterGrid();
+            if(activePageContext === 'all-batch') renderActiveBatchesGrid();
+            if(activePageContext === 'holidays') renderHolidaysModule();
+            if(activePageContext === 'attendance-data') viewFilteredLogs();
+            if(activePageContext === 'fees-management') {
+                const bSelect = document.getElementById('fee-filter-batch');
+                if(bSelect && bSelect.value) renderFeesTable(bSelect.value);
+            }
+        }
+
+        function initializeDashboardViews() {
+            const container = document.getElementById('batch-buttons-container');
+            container.innerHTML = "";
+            
+            if(!window.appData || !window.appData.batches || window.appData.batches.length === 0) {
+                container.innerHTML = `<p style="grid-column: 1/-1; color: #64748b; font-weight: 600;">No active batches available. Please create a new batch.</p>`;
+                return;
+            }
+
+            window.appData.batches.forEach(batch => {
+                const buttonItem = document.createElement('button');
+                buttonItem.className = 'batch-btn';
+                buttonItem.innerText = batch;
+                buttonItem.onclick = () => openRollCallRegister(batch);
+                container.appendChild(buttonItem);
+            });
+        }
+
+        function openRollCallRegister(batchName) {
+            let workingDate = document.getElementById('goto-date-picker').value;
+            
+            if(window.appData.holidays && window.appData.holidays[workingDate]) {
+                alert(`Operation Blocked: Selected date (${workingDate}) is flagged as a holiday: "${window.appData.holidays[workingDate]}".`);
+                return;
+            }
+
+            selectedAttendanceBatch = batchName;
+            document.getElementById('attendance-batch-title').innerText = `${batchName} - Attendance Sheet (${workingDate})`;
+            
+            const tbody = document.getElementById('attendance-students-body');
+            tbody.innerHTML = "";
+
+            const targetStudents = window.appData.students.filter(s => s.batch === batchName && s.joiningDate <= workingDate);
+
+            if(targetStudents.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--danger-color); font-weight:600;">No active students discovered for this batch on this date context.</td></tr>`;
+                document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
+                document.getElementById('page-mark-attendance').classList.add('active');
+                return;
+            }
+
+            targetStudents.forEach((student, index) => {
+                let checkPresent = "checked";
+                let checkAbsent = "";
+                let checkLeave = "";
+                let savedReason = "";
+                let displayReasonInputStyle = "none";
+
+                let baselineRecords = [];
+                if(window.appData.attendanceLogs[workingDate] && window.appData.attendanceLogs[workingDate][batchName]) {
+                    baselineRecords = window.appData.attendanceLogs[workingDate][batchName];
+                }
+
+                const historyMatch = baselineRecords.find(r => r.rollNo === student.id || r.name === student.name);
+                if(historyMatch) {
+                    if(historyMatch.status === "Present") { checkPresent = "checked"; checkAbsent = ""; checkLeave = ""; }
+                    if(historyMatch.status === "Absent") { checkPresent = ""; checkAbsent = "checked"; checkLeave = ""; }
+                    if(historyMatch.status === "Leave") { 
+                        checkPresent = ""; checkAbsent = ""; checkLeave = "checked"; 
+                        savedReason = historyMatch.reason || "";
+                        displayReasonInputStyle = "block";
+                    }
+                }
+
+                const rowElement = document.createElement('tr');
+                rowElement.innerHTML = `
+                    <td style="font-weight:600;">${index + 1}</td>
+                    <td style="font-weight:600; color:var(--primary-color);">${student.name}</td>
+                    <td>
+                        <div class="radio-group">
+                            <label><input type="radio" name="status-${student.id}" value="Present" ${checkPresent} onclick="toggleReasonField(${student.id}, false)"> P</label>
+                            <label><input type="radio" name="status-${student.id}" value="Absent" ${checkAbsent} onclick="toggleReasonField(${student.id}, false)"> A</label>
+                            <label><input type="radio" name="status-${student.id}" value="Leave" ${checkLeave} onclick="toggleReasonField(${student.id}, true)"> Leave</label>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="text" id="reason-${student.id}" class="reason-input" style="display:${displayReasonInputStyle};" value="${savedReason}" placeholder="Specify reason">
+                    </td>
+                `;
+                tbody.appendChild(rowElement);
+            });
+
+            document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
+            document.getElementById('page-mark-attendance').classList.add('active');
+        }
+
+        function toggleReasonField(studentId, isVisible) {
+            const inputField = document.getElementById(`reason-${studentId}`);
+            if(isVisible) {
+                inputField.style.display = 'block';
+                inputField.focus();
+            } else {
+                inputField.style.display = 'none';
+                inputField.value = "";
+            }
+        }
+
+        function submitAttendance() {
+            let trackingDate = document.getElementById('goto-date-picker').value;
+            const batchStudents = window.appData.students.filter(s => s.batch === selectedAttendanceBatch && s.joiningDate <= trackingDate);
+            if(batchStudents.length === 0) {
+                alert("Error: No student data found to save.");
+                return;
+            }
+            
+            if(!window.appData.attendanceLogs[trackingDate]) {
+                window.appData.attendanceLogs[trackingDate] = {};
+            }
+
+            let processingPayload = [];
+            let validated = true;
+
+            batchStudents.forEach(student => {
+                const scopeRadios = document.getElementsByName(`status-${student.id}`);
+                let chosenValue = "Present";
+                for(let radio of scopeRadios) {
+                    if(radio.checked) chosenValue = radio.value;
+                }
+                const specificReason = document.getElementById(`reason-${student.id}`).value.trim();
+
+                if(chosenValue === "Leave" && !specificReason) {
+                    validated = false;
+                }
+
+                processingPayload.push({
+                    rollNo: student.id,
+                    name: student.name,
+                    status: chosenValue,
+                    reason: chosenValue === "Leave" ? specificReason : ""
+                });
+            });
+
+            if(!validated) {
+                if(!confirm("Warning: Some students are on Leave without a specified reason. Submit anyway?")) {
+                    return;
+                }
+            }
+
+            window.appData.attendanceLogs[trackingDate][selectedAttendanceBatch] = processingPayload;
+            window.persistStorage();
+            alert(`Success: Attendance saved for ${selectedAttendanceBatch}.`);
+            switchPage('home');
+        }
+
+        function populateStructuralDropdowns() {
+            const addStudentSelect = document.getElementById('new-student-batch');
+            const delStudentSelect = document.getElementById('delete-student-batch');
+            const removeBatchSelect = document.getElementById('remove-batch-dropdown');
+            const filterLogsSelect = document.getElementById('log-filter-batch');
+            const feeFilterBatch = document.getElementById('fee-filter-batch');
+            
+            let prevAddVal = addStudentSelect ? addStudentSelect.value : "";
+            let prevDelVal = delStudentSelect ? delStudentSelect.value : "";
+            let prevRemVal = removeBatchSelect ? removeBatchSelect.value : "";
+            let prevLogVal = filterLogsSelect ? filterLogsSelect.value : "ALL";
+            let prevFeeVal = feeFilterBatch ? feeFilterBatch.value : "";
+
+            if(addStudentSelect) addStudentSelect.innerHTML = "";
+            if(delStudentSelect) delStudentSelect.innerHTML = "<option value=''>-- Choose Target Batch --</option>";
+            if(removeBatchSelect) removeBatchSelect.innerHTML = "<option value=''>-- Choose Batch to Delete --</option>";
+            if(filterLogsSelect) filterLogsSelect.innerHTML = "<option value='ALL'>All Batches Combined</option>";
+            if(feeFilterBatch) feeFilterBatch.innerHTML = "<option value=''>-- Select Batch --</option>";
+
+            if(!window.appData.batches) return;
+
+            window.appData.batches.forEach(batch => {
+                if(addStudentSelect) addStudentSelect.innerHTML += `<option value="${batch}">${batch}</option>`;
+                if(delStudentSelect) delStudentSelect.innerHTML += `<option value="${batch}">${batch}</option>`;
+                if(removeBatchSelect) removeBatchSelect.innerHTML += `<option value="${batch}">${batch}</option>`;
+                if(filterLogsSelect) filterLogsSelect.innerHTML += `<option value="${batch}">${batch}</option>`;
+                if(feeFilterBatch) feeFilterBatch.innerHTML += `<option value="${batch}">${batch}</option>`;
+            });
+
+            if(addStudentSelect && prevAddVal) addStudentSelect.value = prevAddVal;
+            if(delStudentSelect && prevDelVal) delStudentSelect.value = prevDelVal;
+            if(removeBatchSelect && prevRemVal) removeBatchSelect.value = prevRemVal;
+            if(filterLogsSelect && prevLogVal) filterLogsSelect.value = prevLogVal;
+            if(feeFilterBatch) {
+                if (prevFeeVal) feeFilterBatch.value = prevFeeVal;
+                else if (window.appData.batches.length > 0) feeFilterBatch.value = window.appData.batches[0];
+            }
+        }
+
+        function populateDeleteStudentDropdown(batchName) {
+            const studentSelect = document.getElementById('delete-student-list');
+            studentSelect.innerHTML = "";
+            if(!batchName) return;
+
+            const trackingList = window.appData.students.filter(s => s.batch === batchName);
+            if(trackingList.length === 0) {
+                studentSelect.innerHTML = "<option value=''>No students found</option>";
+                return;
+            }
+            trackingList.forEach(s => {
+                studentSelect.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+            });
+        }
+
+        function createNewBatch() {
+            const proposedBatchName = document.getElementById('new-batch-name').value.trim();
+            if(!proposedBatchName) {
+                alert("Validation Failure: Please write a valid Batch Name.");
+                return;
+            }
+            if(window.appData.batches.includes(proposedBatchName)) {
+                alert("Error: A batch with this identity already exists.");
+                return;
+            }
+            
+            window.appData.batches.push(proposedBatchName);
+            window.persistStorage();
+            document.getElementById('new-batch-name').value = "";
+            alert(`Success: Batch "${proposedBatchName}" created.`);
+            switchPage('home');
+        }
+
+        function deleteBatch() {
+            const targetBatch = document.getElementById('remove-batch-dropdown').value;
+            if(!targetBatch) {
+                alert("Validation Failure: Please pick a batch.");
+                return;
+            }
+
+            const secretPrompt = prompt(`Security Verification Required:\nPlease enter the Admin Password to delete the batch "${targetBatch}":`);
+            if(secretPrompt === null) return;
+            if(secretPrompt !== "2005") {
+                alert("Access Denied: Incorrect Password! You cannot delete this batch.");
+                return;
+            }
+
+            if(confirm(`Are you sure you want to completely delete "${targetBatch}"? All allocated students inside will be removed.`)) {
+                window.appData.batches = window.appData.batches.filter(b => b !== targetBatch);
+                window.appData.students = window.appData.students.filter(s => s.batch !== targetBatch);
+                window.persistStorage();
+                alert(`Success: Batch "${targetBatch}" and its students have been securely deleted.`);
+                switchPage('home');
+            }
+        }
+
+        function addStudent() {
+            const studentName = document.getElementById('new-student-name').value.trim();
+            const targetedBatch = document.getElementById('new-student-batch').value;
+            const monthlyFee = parseFloat(document.getElementById('new-student-fees').value) || 0;
+            const joiningDate = document.getElementById('new-student-joining').value;
+            
+            if(!studentName) { alert("Please enter Student Name."); return; }
+            if(!targetedBatch) { alert("Please select a batch."); return; }
+            if(!joiningDate) { alert("Please choose a joining date."); return; }
+
+            const uniqueId = window.appData.students.length > 0 ? Math.max(...window.appData.students.map(s => s.id)) + 1 : 1;
+            
+            window.appData.students.push({ 
+                id: uniqueId, 
+                name: studentName, 
+                batch: targetedBatch,
+                joiningDate: joiningDate,
+                monthlyFee: monthlyFee,
+                feeHistory: []
+            });
+            
+            window.persistStorage();
+            document.getElementById('new-student-name').value = "";
+            alert(`Success: Profile for "${studentName}" registered under "${targetedBatch}".`);
+            switchPage('home');
+        }
+
+        function deleteStudent() {
+            const targetingStudentId = parseInt(document.getElementById('delete-student-list').value);
+            if(!targetingStudentId) { alert("Please select a student."); return; }
+
+            if(confirm(`Are you sure you want to completely remove this student?`)) {
+                window.appData.students = window.appData.students.filter(s => s.id !== targetingStudentId);
+                window.persistStorage();
+                alert("Success: Student logs erased.");
+                switchPage('home');
+            }
+        }
+
+        function renderStudentDataMasterGrid() {
+            const targetBody = document.getElementById('all-students-list-body');
+            targetBody.innerHTML = "";
+            if(!window.appData.students || window.appData.students.length === 0) {
+                targetBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: #64748b;">No registered students discovered.</td></tr>`;
+                return;
+            }
+            window.appData.students.forEach((student, index) => {
+                targetBody.innerHTML += `<tr>
+                    <td>${index + 1}</td>
+                    <td style="font-weight:600; color:var(--primary-color);">${student.name}</td>
+                    <td><span style="background-color:#eff6ff; color:var(--accent-color); padding:4px 10px; border-radius:4px; font-weight:600; font-size:13px;">${student.batch}</span></td>
+                    <td>${student.joiningDate || '-'}</td>
+                    <td>Rs. ${student.monthlyFee || 0}</td>
+                </tr>`;
+            });
+        }
+
+        function renderActiveBatchesGrid() {
+            const tableBody = document.getElementById('all-batches-table-body');
+            tableBody.innerHTML = "";
+            if(!window.appData.batches || window.appData.batches.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="2" style="text-align:center; color: #64748b;">No active batches.</td></tr>`;
+                return;
+            }
+            window.appData.batches.forEach((batch, idx) => {
+                tableBody.innerHTML += `<tr>
+                    <td style="font-weight:600;">${idx + 1}</td>
+                    <td style="font-weight:700; color:var(--primary-color);">${batch}</td>
+                </tr>`;
+            });
+        }
+
+        function loadAttendanceByDate(chosenDate) {
+            document.getElementById('current-date-display').innerText = chosenDate;
+            alert(`Context shifted to date: ${chosenDate}.`);
+            switchPage('home');
+        }
+
+        function calculateTotalDueFee(joiningDateStr, currentDateStr, monthlyFee) {
+            if (!joiningDateStr || joiningDateStr > currentDateStr) return 0;
+            
+            let joinDate = new Date(joiningDateStr);
+            let currDate = new Date(currentDateStr);
+            
+            let months = (currDate.getFullYear() - joinDate.getFullYear()) * 12;
+            months -= joinDate.getMonth();
+            months += currDate.getMonth();
+            
+            if (currDate.getDate() >= joinDate.getDate()) {
+                months += 1;
+            }
+            
+            if (months <= 0) months = 1;
+            
+            return months * monthlyFee;
+        }
+
+        function renderFeesTable(batchName) {
+            const tbody = document.getElementById('fee-ledger-body');
+            const submitStudentDropdown = document.getElementById('fee-submit-student');
+            let activeWorkingDate = document.getElementById('goto-date-picker').value;
+            
+            tbody.innerHTML = "";
+            submitStudentDropdown.innerHTML = "";
+
+            if(!batchName) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">Select a batch to render fees statement.</td></tr>`;
+                return;
+            }
+
+            const filteredStudents = window.appData.students.filter(s => s.batch === batchName);
+
+            if(filteredStudents.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--danger-color); font-weight:600;">No students mapped in this batch container.</td></tr>`;
+                return;
+            }
+
+            filteredStudents.forEach(student => {
+                submitStudentDropdown.innerHTML += `<option value="${student.id}">${student.name}</option>`;
+
+                let totalAccruedFee = calculateTotalDueFee(student.joiningDate, activeWorkingDate, student.monthlyFee || 0);
+                
+                let totalPaidVal = 0;
+                if(student.feeHistory) {
+                    student.feeHistory.forEach(h => totalPaidVal += parseFloat(h.paid || 0));
+                }
+                
+                let netBalance = totalAccruedFee - totalPaidVal;
+                let balanceDisplayHTML = "";
+
+                if (netBalance < 0) {
+                    let advanceAmt = Math.abs(netBalance);
+                    balanceDisplayHTML = `<span style="color:var(--success-color); font-weight:800; background-color:#f0fdf4; padding:4px 8px; border-radius:4px;">Advance: Rs. ${advanceAmt}</span>`;
+                } else if (netBalance === 0) {
+                    balanceDisplayHTML = `<span style="color:var(--success-color); font-weight:600;">Rs. 0 (Fully Paid)</span>`;
+                } else {
+                    balanceDisplayHTML = `<span style="color:var(--danger-color); font-weight:700;">Due: Rs. ${netBalance}</span>`;
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:600; color:var(--primary-color);">${student.name}</td>
+                        <td style="font-size:14px; color:#475569;">${student.joiningDate || '-'}</td>
+                        <td style="color:#0284c7; font-weight:600;">Rs. ${totalPaidVal}</td>
+                        <td>${balanceDisplayHTML}</td>
+                        <td>
+                            <button class="btn btn-secondary" style="padding: 5px 10px; font-size:12px; width:auto;" onclick="downloadStudentStatement(${student.id})">Download PDF</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function submitStudentFee() {
+            const sId = parseInt(document.getElementById('fee-submit-student').value);
+            const amt = parseFloat(document.getElementById('fee-amount-paid').value) || 0;
+            const pDate = document.getElementById('fee-payment-date').value;
+
+            if(!sId) { alert("Please select a student first."); return; }
+            if(amt <= 0) { alert("Please enter a valid amount greater than 0."); return; }
+            if(!pDate) { alert("Please select a transaction date."); return; }
+
+            const student = window.appData.students.find(s => s.id === sId);
+            if(student) {
+                if(!student.feeHistory) student.feeHistory = [];
+                
+                student.feeHistory.push({ date: pDate, paid: amt });
+                window.persistStorage();
+                
+                alert(`Fee transaction captured: Rs. ${amt} processed for ${student.name}.`);
+                document.getElementById('fee-amount-paid').value = "";
+                
+                renderFeesTable(document.getElementById('fee-filter-batch').value);
+            }
+        }
+
+        function downloadStudentStatement(studentId) {
+            const { jsPDF } = window.jspdf;
+            const student = window.appData.students.find(s => s.id === studentId);
+            if(!student) return;
+
+            let activeWorkingDate = document.getElementById('goto-date-picker').value;
+            const doc = new jsPDF();
+            
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(20);
+            doc.setTextColor(30, 41, 59);
+            doc.text("ANUBHAV COACHING INSTITUTE", 14, 22);
+            
+            doc.setFontSize(14);
+            doc.setTextColor(37, 99, 235);
+            doc.text("Student Fees Ledger Statement Summary", 14, 30);
+            
+            doc.setFontSize(10);
+            doc.setFont("Helvetica", "normal");
+            doc.setTextColor(15, 23, 42);
+            doc.text(`Student Name: ${student.name}`, 14, 42);
+            doc.text(`Allocated Batch: ${student.batch}`, 14, 48);
+            doc.text(`Registration/Joining Date: ${student.joiningDate || '-'}`, 14, 54);
+            
+            let totalAccruedFee = calculateTotalDueFee(student.joiningDate, activeWorkingDate, student.monthlyFee || 0);
+            let totalPaidVal = 0;
+            let tableRows = [];
+
+            if(student.feeHistory) {
+                student.feeHistory.forEach((h, idx) => {
+                    totalPaidVal += parseFloat(h.paid || 0);
+                    tableRows.push([idx + 1, h.date, `Rs. ${h.paid}`]);
+                });
+            }
+            let netBalance = totalAccruedFee - totalPaidVal;
+            let balanceLabel = netBalance < 0 ? `Advance: Rs. ${Math.abs(netBalance)}` : `Net Outstanding Due: Rs. ${netBalance}`;
+
+            doc.text(`Monthly Fee Cycle Rate: Rs. ${student.monthlyFee || 0}`, 120, 42);
+            doc.text(`Total Accrued Fee (Till Date): Rs. ${totalAccruedFee}`, 120, 48);
+            doc.text(`Consolidated Total Paid: Rs. ${totalPaidVal}`, 120, 54);
+            
+            doc.setFont("Helvetica", "bold");
+            doc.text(balanceLabel, 120, 60);
+
+            doc.autoTable({
+                startY: 68,
+                head: [['#', 'Transaction Date', 'Amount Credited']],
+                body: tableRows.length > 0 ? tableRows : [['-', 'No Records Found', 'Rs. 0']],
+                headStyles: { fillColor: [30, 41, 59] },
+                theme: 'striped'
+            });
+
+            doc.save(`Fee_Statement_${student.name.replace(/\s+/g, '_')}.pdf`);
+        }
+
+        function addHoliday() {
+            const hDate = document.getElementById('holiday-date').value;
+            const hReason = document.getElementById('holiday-reason').value.trim();
+
+            if(!hDate || !hReason) {
+                alert("Validation Failure: Missing fields.");
+                return;
+            }
+
+            if(!window.appData.holidays) window.appData.holidays = {};
+            window.appData.holidays[hDate] = hReason;
+            window.persistStorage();
+            
+            document.getElementById('holiday-date').value = "";
+            document.getElementById('holiday-reason').value = "";
+            alert(`Success: Holiday logged.`);
+            renderHolidaysModule();
+        }
+
+        function deleteHoliday(dateKey) {
+            if(confirm(`Remove holiday override for date ${dateKey}?`)) {
+                delete window.appData.holidays[dateKey];
+                window.persistStorage();
+                renderHolidaysModule();
+            }
+        }
+
+        function renderHolidaysModule() {
+            const targetContainer = document.getElementById('saved-holidays-list');
+            targetContainer.innerHTML = "";
+
+            if(!window.appData.holidays || Object.keys(window.appData.holidays).length === 0) {
+                targetContainer.innerHTML = `<li style="color:#64748b; font-style:italic;">No holidays mapped yet.</li>`;
+                return;
+            }
+
+            const keysSorted = Object.keys(window.appData.holidays).sort((a,b) => new Date(b) - new Date(a));
+
+            keysSorted.forEach(dateKey => {
+                const itemLi = document.createElement('li');
+                itemLi.className = 'holiday-item';
+                itemLi.innerHTML = `
+                    <div class="holiday-info">
+                        <h4>${window.appData.holidays[dateKey]}</h4>
+                        <p>Date: ${dateKey}</p>
+                    </div>
+                    <button class="btn btn-danger" style="width:auto; padding: 6px 12px; font-size:13px;" onclick="deleteHoliday('${dateKey}')">Delete</button>
+                `;
+                targetContainer.appendChild(itemLi);
+            });
+        }
+
+        function processDateRangeLogs() {
+            const filterBatch = document.getElementById('log-filter-batch').value;
+            const startStr = document.getElementById('log-start-date').value;
+            const endStr = document.getElementById('log-end-date').value;
+
+            if(!startStr || !endStr) {
+                return { error: "Please pick absolute boundaries for start and end dates." };
+            }
+
+            const dateStart = new Date(startStr);
+            const dateEnd = new Date(endStr);
+
+            if(dateStart > dateEnd) {
+                return { error: "Chronological Error: Start date boundary cannot exceed End Date." };
+            }
+
+            let masterDataset = [];
+            let processingDate = new Date(dateStart);
+            
+            while(processingDate <= dateEnd) {
+                let ISOStringDate = processingDate.toISOString().split('T')[0];
+                
+                if(window.appData.holidays && window.appData.holidays[ISOStringDate]) {
+                    masterDataset.push({
+                        date: ISOStringDate,
+                        batch: filterBatch === 'ALL' ? 'ALL BATCHES' : filterBatch,
+                        name: "--- INSTITUTE HOLIDAY ---",
+                        status: "HOLIDAY",
+                        reason: window.appData.holidays[ISOStringDate]
+                    });
+                } 
+                else if(window.appData.attendanceLogs[ISOStringDate]) {
+                    let dateScopeLogs = window.appData.attendanceLogs[ISOStringDate];
+                    
+                    for(let currentBatchKey in dateScopeLogs) {
+                        if(filterBatch === 'ALL' || filterBatch === currentBatchKey) {
+                            dateScopeLogs[currentBatchKey].forEach(record => {
+                                masterDataset.push({
+                                    date: ISOStringDate,
+                                    batch: currentBatchKey,
+                                    name: record.name,
+                                    status: record.status,
+                                    reason: record.reason || "-"
+                                });
+                            });
+                        }
+                    }
+                }
+                processingDate.setDate(processingDate.getDate() + 1);
+            }
+
+            return { data: masterDataset, batch: filterBatch, start: startStr, end: endStr };
+        }
+
+        function viewFilteredLogs() {
+            const displayContainer = document.getElementById('attendance-log-container');
+            if(!displayContainer) return;
+            displayContainer.innerHTML = "";
+
+            const pipelineResult = processDateRangeLogs();
+            if(pipelineResult.error) {
+                alert(pipelineResult.error);
+                return;
+            }
+
+            const records = pipelineResult.data;
+            if(!records || records.length === 0) {
+                displayContainer.innerHTML = `<p style="color:var(--danger-color); font-weight:bold; margin-top:15px;">No transitional records discovered.</p>`;
+                return;
+            }
+
+            let HTMLGridTable = `
+                <h4 style="margin-top:15px; margin-bottom:10px; color:var(--primary-color);">Data Log Preview (Total Rows: ${records.length})</h4>
+                <table class="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Batch</th>
+                            <th>Student Name / Info</th>
+                            <th>Status</th>
+                            <th>Reason / Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            records.forEach(row => {
+                let statusBadgeColor = "green";
+                let textWeight = "600";
+                let customRowStyle = "";
+
+                if(row.status === 'Absent') statusBadgeColor = "red";
+                if(row.status === 'Leave') statusBadgeColor = "orange";
+                if(row.status === 'HOLIDAY') {
+                    statusBadgeColor = "var(--warning-color)";
+                    textWeight = "bold";
+                    customRowStyle = "background-color: #fffbeb;";
+                }
+
+                HTMLGridTable += `
+                    <tr style="${customRowStyle}">
+                        <td style="font-size:14px; font-weight:600;">${row.date}</td>
+                        <td><span style="background-color:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:13px; font-weight:600;">${row.batch}</span></td>
+                        <td style="font-weight:${textWeight}; color:${row.status === 'HOLIDAY' ? 'var(--warning-color)' : 'inherit'}">${row.name}</td>
+                        <td style="font-weight:bold; color:${statusBadgeColor};">${row.status}</td>
+                        <td style="font-size:14px; color:#475569;">${row.reason}</td>
+                    </tr>
+                `;
+            });
+
+            HTMLGridTable += `</tbody></table>`;
+            displayContainer.innerHTML = HTMLGridTable;
+        }
+
+        function exportDataRangeExcel() {
+            const packageRes = processDateRangeLogs();
+            if(packageRes.error) { alert(packageRes.error); return; }
+
+            const lines = packageRes.data;
+            if(!lines || lines.length === 0) {
+                alert("Export Interrupted: No data inside this date boundary range.");
+                return;
+            }
+
+            let spreadsheetContent = "data:text/csv;charset=utf-8,";
+            spreadsheetContent += "Date,Batch Name,Student Full Name / Holiday Info,Attendance Status,Leave Reason / Holiday Details\r\n";
+
+            lines.forEach(item => {
+                let clearName = item.name.replace(/"/g, '""');
+                let clearReason = item.reason.replace(/"/g, '""');
+                spreadsheetContent += `${item.date},"${item.batch}","${clearName}",${item.status},"${clearReason}"\r\n`;
+            });
+
+            const secureUriEncoding = encodeURI(spreadsheetContent);
+            const anchorElement = document.createElement("a");
+            anchorElement.setAttribute("href", secureUriEncoding);
+            anchorElement.setAttribute("download", `Attendance_Report_${packageRes.start}_to_${packageRes.end}.csv`);
+            document.body.appendChild(anchorElement);
+            anchorElement.click();
+            document.body.removeChild(anchorElement);
+        }
+
+        function exportDataRangePDF() {
+            const { jsPDF } = window.jspdf;
+            const executionContextData = processDateRangeLogs();
+            
+            if(executionContextData.error) { alert(executionContextData.error); return; }
+            const records = executionContextData.data;
+            if(!records || records.length === 0) {
+                alert("Export Interrupted: No records discovered to build PDF report.");
+                return;
+            }
+
+            const doc = new jsPDF();
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(18);
+            doc.setTextColor(30, 41, 59);
+            doc.text("ANUBHAV COACHING INSTITUTE", 14, 22);
+            
+            doc.setFontSize(12);
+            doc.setFont("Helvetica", "normal");
+            doc.text(`Comprehensive Attendance Log & Holiday Report (${executionContextData.start} to ${executionContextData.end})`, 14, 30);
+
+            let tableRows = [];
+            records.forEach(r => {
+                tableRows.push([r.date, r.batch, r.name, r.status, r.reason]);
+            });
+
+            doc.autoTable({
+                startY: 38,
+                head: [['Date', 'Batch', 'Student Name / Info', 'Status', 'Reason / Details']],
+                body: tableRows,
+                headStyles: { fillColor: [37, 99, 235] },
+                theme: 'grid',
+                didParseCell: function(data) {
+                    if (data.row.raw && data.row.raw[3] === 'HOLIDAY') {
+                        data.cell.styles.fillColor = [254, 243, 199];
+                        data.cell.styles.textColor = [217, 119, 6];
+                    }
+                }
+            });
+
+            doc.save(`Attendance_Report_${executionContextData.start}_to_${executionContextData.end}.pdf`);
+            alert("Success: PDF report (with Holidays mapped) generated and downloaded.");
+        }
+    </script>
+</body>
+</html>
