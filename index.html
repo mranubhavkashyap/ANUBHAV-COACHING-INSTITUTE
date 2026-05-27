@@ -6,6 +6,7 @@
     <title>Anubhav Coaching Institute</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary-color: #1e293b;
@@ -735,27 +736,13 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBRswW5iRxDHre31dR3cQhdPuDPXWTHTMk",
-            authDomain: "anubhav-coaching-institute.firebaseapp.com",
-            databaseURL: "https://anubhav-coaching-institute-default-rtdb.firebaseio.com",
-            projectId: "anubhav-coaching-institute",
-            storageBucket: "anubhav-coaching-institute.firebasestorage.app",
-            messagingSenderId: "707283254376",
-            appId: "1:707283254376:web:91ce3a0f74673d2f94cfdd"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Firestore Document Reference
-        const docRef = doc(db, "coachingSystem", "masterData");
+    <script>
+        // Supabase Credentials
+        const SUPABASE_URL = "https://efieaaocvdfjoyunhbdz.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaWVhYW9jdmRmam95dW5oYmR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4NjIxNzcsImV4cCI6MjA5NTQzODE3N30.7Qdrw-5di14aiZx2R6mem5mwktsFSH1G7RJQy2FfDIw";
+        
+        // Initialize Supabase Client
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // Global Memory Variable
         window.appData = {
@@ -765,31 +752,48 @@
             holidays: {} 
         };
 
-        // Cloud se Data Syncing (Real-Time listener)
-        onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-                window.appData = docSnap.data();
-                if (!window.appData.batches) window.appData.batches = [];
-                if (!window.appData.students) window.appData.students = [];
-                if (!window.appData.attendanceLogs) window.appData.attendanceLogs = {};
-                if (!window.appData.holidays) window.appData.holidays = {};
-            } else {
-                // Default structure if Cloud is completely empty
-                window.appData = { batches: ["Batch 01", "Batch 02"], students: [], attendanceLogs: {}, holidays: {} };
-                persistStorage();
-            }
-            refreshActiveView();
-        });
+        // Cloud (Supabase) se data fetch karne ka function
+        async function loadStorageFromCloud() {
+            try {
+                const { data, error } = await supabase
+                    .from('user_data')
+                    .select('content')
+                    .order('id', { ascending: false })
+                    .limit(1);
 
-        // Data Save/Update Function
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    // Content string ko wapas real JavaScript object me badalna
+                    window.appData = JSON.parse(data[0].content);
+                } else {
+                    // Agar database khali ho toh default data set karna
+                    window.appData = { batches: ["Batch 01", "Batch 02"], students: [], attendanceLogs: {}, holidays: {} };
+                    await persistStorage();
+                }
+                refreshActiveView();
+            } catch (err) {
+                console.error("Supabase Load Error: ", err);
+            }
+        }
+
+        // Data Save/Update Function (Supabase Cloud updates)
         async function persistStorage() {
             try {
-                await setDoc(docRef, window.appData);
+                const stringData = JSON.stringify(window.appData);
+                const { error } = await supabase
+                    .from('user_data')
+                    .insert([{ content: stringData }]);
+                
+                if (error) throw error;
             } catch (error) {
-                console.error("Firebase Sync Error: ", error);
+                console.error("Supabase Sync Error: ", error);
             }
         }
         window.persistStorage = persistStorage;
+
+        // Page load hote hi data pull karein
+        window.addEventListener('DOMContentLoaded', loadStorageFromCloud);
     </script>
 
     <script>
@@ -876,7 +880,7 @@
             container.innerHTML = "";
             
             if(!window.appData || !window.appData.batches || window.appData.batches.length === 0) {
-                container.innerHTML = `<p style="grid-column: 1/-1; color: #64748b; font-weight: 600;">No active batches available. Please create a new batch.</p>`;
+                container.innerHTML = `<p style="grid-column: 1/-1; color: #64748b; font-weight: 600;">No active batches available. Please create a nex batch.</p>`;
                 return;
             }
 
